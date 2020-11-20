@@ -89,71 +89,57 @@ for i in range(len(regions)):
 
 WEST,MIDATL,SOUTH = l
 
-
-# %%  <Solar> Analysis
-dfs = [WEST,MIDATL,SOUTH]
-regions = ['WEST','MIDATL','SOUTH']
-plt.figure(figsize = (25,17))
-
-for i,g in zip(range(len(dfs)) ,range(1,4) ):
-    ax = plt.subplot(3,3,g)
-    
-    X = dfs[i].drop([str(regions[i])+'_solar',str(regions[i])+'_demand',str(regions[i])+'_wind'], axis=1)
-    Y = dfs[i][str(regions[i])+'_solar']
-    X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=2, shuffle = False)
-    
-    dt = DecisionTreeRegressor(criterion = 'mse')
-    lr = LinearRegression()
-    
-    dt.fit(X_train,y_train)
-    lr.fit(X_train,y_train)
-    
-    y_1 = dt.predict(X_test)
-    y_2 = lr.predict(X_test)
-    
-    ax.plot(X_test.index.tolist(), y_test,color = 'midnightblue',label="Actual")
-    ax.plot(X_test.index.tolist(), y_1, color="red",alpha=0.5,
-              label="DT prediction", linewidth=2)
-    ax.plot(X_test.index.tolist(), y_2, color="skyblue", alpha=0.7,
-              label="Linear Reg predcition", linewidth=2)
-    ax.set_xticks(ax.get_xticks()[::2])
-    plt.legend()
-    plt.title('Solar_region : {}'.format(regions[i]))
-
-# %% <Wind> Analysis
-dfs = [WEST,MIDATL,SOUTH]
-regions = ['WEST','MIDATL','SOUTH']
+# %% <Wind> and solar Analysis
 plt.figure(figsize = (35,25))
-for i,g in zip(range(len(dfs)) ,range(1,4) ):
-    ax = plt.subplot(3,3,g)
-    
-    X = dfs[i].drop([str(regions[i])+'_wind',str(regions[i])+'_wind',str(regions[i])+'_wind'], axis=1)
-    Y = dfs[i][str(regions[i])+'_wind']
-    
-    X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=2, shuffle = False)
-    
-    dt = DecisionTreeRegressor(criterion = 'mse')
-    lr = LinearRegression()
-    
-    dt.fit(X_train,y_train)
-    lr.fit(X_train,y_train)
-    
-    y_1 = dt.predict(X_test)
-    y_2 = lr.predict(X_test)
-    
-    
-    ax.plot(X_test.index.tolist(), y_test,color = 'midnightblue',label="Actual")
-    ax.plot(X_test.index.tolist(), y_1, color="red",alpha=0.5,
-              label="DT prediction", linewidth=2)
-    ax.plot(X_test.index.tolist(), y_2, color="skyblue", alpha=0.7,
-              label="Linear Reg predcition", linewidth=2)
-    
-    labels = ax.get_xticks()[::2]
-    ax.set_xticks(labels)
-    plt.legend()
-    plt.title('WIND_region : {}'.format(regions[i]))
+dfs = [WEST,MIDATL,SOUTH]
+regions = ['WEST','MIDATL','SOUTH']
+REN = ['_solar','_wind']
+ranges = [range(1,4),range(4,7)]
 
-   
+for r in range(len(REN)):
+    
+    for i,g in zip(range(len(dfs)) , ranges[r] ):
+       
+        ax = plt.subplot(3,3,g)
+        
+        X = dfs[i].drop([str(regions[i])+REN[r],str(regions[i])+REN[r],str(regions[i])+REN[r]], axis=1)
+        Y = dfs[i][str(regions[i])+REN[r]]
+        
+        X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=2, shuffle = False)
+        
+        dt = DecisionTreeRegressor(criterion = 'mse')
+        lr = LinearRegression()
+        
+        dt.fit(X_train,y_train)
+        lr.fit(X_train,y_train)
+        
+        y_1 = dt.predict(X_test)
+        y_2 = lr.predict(X_test)
+        
+        
+        ax.plot(X_test.index.tolist(), y_test,color = 'midnightblue',label="Actual")
+        ax.plot(X_test.index.tolist(), y_1, color="red",alpha=0.5,
+                  label="DT prediction", linewidth=2)
+        ax.plot(X_test.index.tolist(), y_2, color="skyblue", alpha=0.7,
+                  label="Linear Reg predcition", linewidth=2)
+        
+        labels = ax.get_xticks()[::2]
+        ax.set_xticks(labels)
+        plt.legend()
+        if REN[r] == '_solar':
+            plt.title('SOLAR : {}'.format(regions[i]))
+        if REN[r] == '_wind':
+            plt.title('WIND : {}'.format(regions[i]))
+
+    
+
+
+
+
+
+
+
+
 
 
 
